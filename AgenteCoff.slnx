@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="docs/comandos.txt" />
+    <File Path="global.json" />
+    <File Path="publicacion/.env" />
+    <File Path="publicacion/docker-compose.yaml" />
+  </Folder>
+  <Project Path="AgenteCoff.ApiService/AgenteCoff.ApiService.csproj" />
+  <Project Path="AgenteCoff.AppHost/AgenteCoff.AppHost.csproj" />
+  <Project Path="AgenteCoff.ServiceDefaults/AgenteCoff.ServiceDefaults.csproj" />
+  <Project Path="AgenteCoff.Tests/AgenteCoff.Tests.csproj" />
+  <Project Path="AgenteCoff.Web/AgenteCoff.Web.csproj" />
+</Solution>

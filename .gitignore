@@ -1,0 +1,12 @@
+/.vs
+/AgenteCoff.ApiService/bin
+/AgenteCoff.ApiService/obj
+/AgenteCoff.AppHost/bin
+/AgenteCoff.AppHost/obj
+/AgenteCoff.ServiceDefaults/bin
+/AgenteCoff.ServiceDefaults/obj
+/AgenteCoff.Tests/bin
+/AgenteCoff.Tests/obj
+/AgenteCoff.Web/bin
+/AgenteCoff.Web/obj
+AgenteCoff.ApiService/AgenteCoffLocal.db

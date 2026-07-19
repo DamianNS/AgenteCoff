@@ -1,0 +1,47 @@
+@echo off
+:: ========================================================================
+:: SCRIPT DE REGENERACIÓN Y DESPLIEGUE - PROYECTO AGENTECOFF (.NET ASPIRE)
+:: ========================================================================
+
+echo [1/4] Actualizando dependencias y solucionando vulnerabilidades...
+:: Instala el paquete de Docker necesario para que funcione el AppHost
+dotnet add .\AgenteCoff.AppHost\AgenteCoff.AppHost.csproj package Aspire.Hosting.Docker
+
+echo.
+echo [2/4] Regenerando manifiestos de Docker Compose...
+:: Genera el docker-compose.yaml y el archivo .env actualizados en la carpeta 'publicacion'
+aspire publish -p docker-compose -o ./publicacion
+
+echo.
+echo [3/4] Compilando codigo C# y generando imagenes locales en Podman...
+:: Compila de forma nativa e inyecta las imagenes de contenedor directamente en el motor local
+dotnet publish .\AgenteCoff.ApiService\AgenteCoff.ApiService.csproj -c Release /t:PublishContainer -p:ContainerImageName=agentecoff-api
+dotnet publish .\AgenteCoff.Web\AgenteCoff.Web.csproj -c Release /t:PublishContainer -p:ContainerImageName=agentecoff-web
+
+echo.
+echo [4/4] Reiniciando contenedores en el entorno local...
+:: Se para en la carpeta de salida, apaga lo viejo para limpiar redes y enciende todo de nuevo
+cd publicacion
+podman compose down
+podman compose up -d
+
+echo.
+echo ========================================================================
+:: NOTA COMPLEMENTARIA PARA PASAR A LINUX FÍSICO:
+:: Si deseas exportar estas imagenes para llevarlas a tu servidor Linux limpio, 
+:: ejecuta manualmente los siguientes comandos en tu terminal de desarrollo:
+::
+:: 1. Guardar imagenes a un comprimido:
+::    podman save -o mis-imagenes.tar agentecoff-api:latest agentecoff-web:latest
+::
+:: 2. En tu servidor Linux (tras copiar los archivos .yaml, .env y el .tar):
+::    podman load -i mis-imagenes.tar
+::    podman compose up -d
+:: ========================================================================
+echo ¡Proceso completado con exito! Monitorea tu Dashboard en http://localhost:18888
+pause
+
+
+dotnet publish .\AgenteCoff.ApiService\AgenteCoff.ApiService.csproj -c Release /t:PublishContainer -p:ContainerImageName=agentecoff-api
+
+dotnet publish .\AgenteCoff.Web\AgenteCoff.Web.csproj -c Release /t:PublishContainer -p:ContainerImageName=agentecoff-web

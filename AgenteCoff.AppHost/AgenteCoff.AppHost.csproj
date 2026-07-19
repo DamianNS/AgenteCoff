@@ -1,0 +1,20 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.4.6">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>b899bd7f-0d5e-4a13-bf0b-0510ea2e2f30</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AgenteCoff.ApiService\AgenteCoff.ApiService.csproj" />
+    <ProjectReference Include="..\AgenteCoff.Web\AgenteCoff.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Docker" Version="13.4.6" />
+  </ItemGroup>
+
+</Project>
