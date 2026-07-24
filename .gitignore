@@ -10,3 +10,5 @@
 /AgenteCoff.Web/bin
 /AgenteCoff.Web/obj
 AgenteCoff.ApiService/AgenteCoffLocal.db
+*.user
+/AgenteCoff.ApiService/publish
