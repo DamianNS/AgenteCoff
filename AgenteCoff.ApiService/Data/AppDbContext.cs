@@ -11,5 +11,6 @@ namespace AgenteCoff.ApiService.Data
 
         public DbSet<WeatherForecastEntity> WeatherForecasts => Set<WeatherForecastEntity>();
         public DbSet<Aviso> Avisos { get; set; }
+        public DbSet<NotifyDTO> Notify { get; set; }
     }
 }

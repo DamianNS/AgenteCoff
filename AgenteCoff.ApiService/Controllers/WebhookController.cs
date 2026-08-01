@@ -8,15 +8,19 @@ namespace AgenteCoff.ApiService.Controllers
     {
         public class WebhookPayload
         {
-            public string titulo { get; set; }
-            public string body { get; set; }
+            public string? PackageName { get; set; }
+            public string? AppName { get; set; }
+            public string? Title { get; set; }
+            public string? Text { get; set; }
         }
 
         [HttpPost]
         public IActionResult Post(WebhookPayload payload)
         {
-            Console.WriteLine(payload.titulo);
-            Console.WriteLine(payload.body);
+            Console.WriteLine(payload.PackageName);
+            Console.WriteLine(payload.AppName);
+            Console.WriteLine(payload.Title);
+            Console.WriteLine(payload.Text);
             return Ok(new { message = "Webhook received successfully", data = payload });
         }
     }
