@@ -3,7 +3,7 @@ name: CI/CD AgenteCoff
 on:
   push:
     branches:
-      - main  # Se ejecuta automáticamente al hacer push a la rama main
+      - main
 
 jobs:
   build-and-push:
@@ -12,32 +12,30 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v4
 
+      # Configuramos .NET SDK en el servidor de GitHub
+      - name: Configurar .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0' # Ajusta a tu versión de .NET (ej. '8.0' o '9.0')
+
+      # Iniciamos sesión en Docker Hub usando el comando nativo de Docker
       - name: Iniciar sesión en Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Configurar Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      # Compilar, empaquetar y subir la API usando Docker
+      - name: Publicar y subir API Service
+        run: |
+          dotnet publish ./AgenteCoff.ApiService/AgenteCoff.ApiService.csproj -c Release /t:PublishContainer -p:ContainerRepository=agentecoff-api -p:ContainerRuntimeIdentifier=linux-x64
+          docker tag agentecoff-api:latest ${{ secrets.DOCKER_USERNAME }}/agentecoff-api:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/agentecoff-api:latest
 
-      # Construye y sube la API
-      - name: Construir y subir imagen de la API
-        uses: docker/build-push-action@v5
-        with:
-          context: ./AgenteCoff.ApiService # Ajusta si la ruta en tu repo varía
-          file: ./AgenteCoff.ApiService/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/agentecoff-api:latest
-
-      # Construye y sube el Frontend
-      - name: Construir y subir imagen del WebFrontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./AgenteCoff.Web # Ajusta si la ruta en tu repo varía
-          file: ./AgenteCoff.Web/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/agentecoff-web:latest
+      # Compilar, empaquetar y subir el WebFrontend usando Docker
+      - name: Publicar y subir Web Frontend
+        run: |
+          dotnet publish ./AgenteCoff.Web/AgenteCoff.Web.csproj -c Release /t:PublishContainer -p:ContainerRepository=agentecoff-web -p:ContainerRuntimeIdentifier=linux-x64
+          docker tag agentecoff-web:latest ${{ secrets.DOCKER_USERNAME }}/agentecoff-web:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/agentecoff-web:latest
 
   deploy:
     needs: build-and-push
@@ -46,9 +44,9 @@ jobs:
       - name: Desplegar en el servidor de DonWeb vía SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.DOCKER_USERNAME }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd ~/docker/agentecoff
             docker compose pull
