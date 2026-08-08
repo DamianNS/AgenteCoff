@@ -10,7 +10,7 @@ services:
     restart: "always"
     environment:
       - DASHBOARD__OTLP__AUTHMODE=ApiKey
-      - DASHBOARD__OTLP__PRIMARYAPIKEY=${MI_TELEMETRIA_KEY}
+      - DASHBOARD__OTLP__PRIMARYAPIKEY=HolaMundo
   apiservice:
     build:
       context: ../AgenteCoff.ApiService  # Ruta hacia la carpeta de tu API
@@ -23,10 +23,10 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://mi-red-hogarena-dashboard:18889"
       OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
       OTEL_SERVICE_NAME: "apiservice"
-      OTEL_EXPORTER_OTLP_HEADERS: "x-otlp-api-key=${MI_TELEMETRIA_KEY}"
+      OTEL_EXPORTER_OTLP_HEADERS: "x-otlp-api-key=HolaMundo"
       ConnectionStrings__DefaultConnection: "Data Source=/app/data/agentecoff.db"
     expose:
-      - "${APISERVICE_PORT}"
+      - "5001"
     networks:
       - "aspire"
     volumes:
@@ -40,13 +40,13 @@ services:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
       HTTP_PORTS: "${WEBFRONTEND_PORT}"
-      APISERVICE_HTTP: "http://apiservice:${APISERVICE_PORT}"
-      services__apiservice__http__0: "http://apiservice:${APISERVICE_PORT}"
-      APISERVICE_HTTPS: "https://apiservice:${APISERVICE_PORT}"
+      APISERVICE_HTTP: "http://apiservice:5001"
+      services__apiservice__http__0: "http://apiservice:5001"
+      APISERVICE_HTTPS: "https://apiservice:5001"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://mi-red-hogarena-dashboard:18889"
       OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
       OTEL_SERVICE_NAME: "webfrontend"
-      OTEL_EXPORTER_OTLP_HEADERS: "x-otlp-api-key=${MI_TELEMETRIA_KEY}"
+      OTEL_EXPORTER_OTLP_HEADERS: "x-otlp-api-key=HolaMundo"
     ports:
       - "8080:8080"
     depends_on:

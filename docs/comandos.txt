@@ -42,6 +42,12 @@ echo ¡Proceso completado con exito! Monitorea tu Dashboard en http://localhost:
 pause
 
 
-dotnet publish .\AgenteCoff.ApiService\AgenteCoff.ApiService.csproj -c Release /t:PublishContainer -p:ContainerImageName=agentecoff-api
+dotnet publish .\AgenteCoff.ApiService\AgenteCoff.ApiService.csproj -c Release /t:PublishContainer -p:ContainerRepository=agentecoff-api
+dotnet publish .\AgenteCoff.ApiService\AgenteCoff.ApiService.csproj -c Release /t:PublishContainer -p:ContainerRepository=agentecoff-api -p:ContainerRuntimeIdentifier=linux-x64
+podman tag agentecoff-api:latest damianns1/agentecoff-api:latest
+podman push damianns1/agentecoff-api:latest
 
-dotnet publish .\AgenteCoff.Web\AgenteCoff.Web.csproj -c Release /t:PublishContainer -p:ContainerImageName=agentecoff-web
+dotnet publish .\AgenteCoff.Web\AgenteCoff.Web.csproj -c Release /t:PublishContainer -p:ContainerRepository=agentecoff-web
+dotnet publish .\AgenteCoff.Web\AgenteCoff.Web.csproj -c Release /t:PublishContainer -p:ContainerRepository=agentecoff-web -p:ContainerRuntimeIdentifier=linux-x64
+podman tag agentecoff-web:latest damianns1/agentecoff-web:latest
+podman push damianns1/agentecoff-web:latest

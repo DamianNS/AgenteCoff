@@ -53,6 +53,7 @@ namespace AgenteCoff.ApiService
 
             app.MapControllers();
             app.MapDefaultEndpoints();
+            app.MapStaticAssets();
             app.Run();
         }
     }
