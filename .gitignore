@@ -12,3 +12,4 @@
 AgenteCoff.ApiService/AgenteCoffLocal.db
 *.user
 /AgenteCoff.ApiService/publish
+*.tar
