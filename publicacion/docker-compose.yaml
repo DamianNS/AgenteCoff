@@ -31,6 +31,8 @@ services:
       - "aspire"
     volumes:
       - ./datos_api:/app/data
+    ports:
+      - "5009:${APISERVICE_PORT}"
   webfrontend:
     build:
       context: ../AgenteCoff.Web  # Ruta hacia la carpeta de tu frontend
@@ -48,7 +50,7 @@ services:
       OTEL_SERVICE_NAME: "webfrontend"
       OTEL_EXPORTER_OTLP_HEADERS: "x-otlp-api-key=HolaMundo"
     ports:
-      - "8080:8080"
+      - "5008:8080"
     depends_on:
       apiservice:
         condition: "service_started"
