@@ -47,11 +47,9 @@
 </div>
 
 @code {
-    private LoginFormModel loginModel = new();
-    private bool isSubmitting;
-    private bool isAuthenticated;
+    private LoginFormModel loginModel = new();    
+    private bool isAuthenticated;    
     private string? userName;
-    private string? errorMessage;
 
     [CascadingParameter]
     private Task<AuthenticationState>? AuthStateTask { get; set; }
@@ -61,6 +59,10 @@
         if (firstRender)
         {
             isAuthenticated = AuthStateTask?.Result.User.Identity?.IsAuthenticated ?? false;
+            if (isAuthenticated)
+            {
+                userName = AuthStateTask?.Result.User.Identity?.Name;
+            }
             StateHasChanged();
         }
         

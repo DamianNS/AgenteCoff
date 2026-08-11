@@ -15,7 +15,7 @@ namespace AgenteCoff.Web.Controllers
         public LocalAuthController(ApiClient authApiClient, IHttpContextAccessor _httpContextAccessor)
         {
             this.authApiClient = authApiClient;
-            this.httpContext = _httpContextAccessor.HttpContext;            
+            this.httpContext = _httpContextAccessor.HttpContext!;            
         }
 
         [HttpGet("/auth/logout")] // O [HttpPost] según prefieras
@@ -34,7 +34,7 @@ namespace AgenteCoff.Web.Controllers
             // 1. Llamar a tu API backend que te regresa el JWT
             var response = await authApiClient.LoginAsync(request);
 
-           if(response != null)
+            if(response != null)
             {
 
                 var claims = new List<Claim>
@@ -45,19 +45,9 @@ namespace AgenteCoff.Web.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, "login");
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                 await httpContext.SignInAsync("login", claimsPrincipal);
-
-                //httpContext.Response.Cookies.Append("X-Access-Token", response.Token, new CookieOptions
-                //{
-                //    HttpOnly = true,
-                //    Secure = true,
-                //    SameSite = SameSiteMode.Strict,
-                //    Expires = DateTimeOffset.UtcNow.AddHours(1) // Ajusta según la expiración de tu JWT
-                //});
-
                 return Redirect("/");
             }
-
-            // 2. Guardar el JWT en una cookie HttpOnly y Segura
+            
             return Forbid();
         }
     }

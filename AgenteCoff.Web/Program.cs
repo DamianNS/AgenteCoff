@@ -21,7 +21,6 @@ builder.Services.AddTransient<CookieToJwtHandler>();
 builder.Services.AddHttpClient<ApiClient>(client => client.BaseAddress = new("http://apiservice"))
     .AddHttpMessageHandler<CookieToJwtHandler>();
 builder.Services.AddScoped<ProtectedSessionStorage>(); 
-builder.Services.AddScoped<AuthenticationSessionService>();
 
 builder.Services.AddCascadingAuthenticationState(); // Requerido en Blazor
 
