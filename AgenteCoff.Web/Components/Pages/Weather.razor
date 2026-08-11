@@ -1,10 +1,12 @@
 ﻿@page "/weather"
+@using AgenteCoff.Web.Services
 @attribute [StreamRendering(true)]
 @attribute [OutputCache(Duration = 5)]
 
-@inject WeatherApiClient WeatherApi
+@inject ApiClient WeatherApi
 @inject AuthenticationSessionService AuthService
 @inject NavigationManager Navigation
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 <PageTitle>Weather</PageTitle>
 
@@ -54,8 +56,11 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await AuthService.GetTokenAsync();
-        isAuthenticated = !string.IsNullOrWhiteSpace(token);
+        var user = HttpContextAccessor.HttpContext?.User;
+        isAuthenticated = user?.Identity?.IsAuthenticated ?? false;
+        var userName = isAuthenticated ? user?.Identity?.Name : null;
+        // StateHasChanged();
+        
 
         if (!isAuthenticated)
         {
@@ -68,8 +73,8 @@ else
         }
         catch (UnauthorizedAccessException)
         {
-            await AuthService.LogoutAsync();
-            Navigation.NavigateTo("/login");
+            // await AuthService.LogoutAsync();
+            // Navigation.NavigateTo("/login");
         }
     }
 }

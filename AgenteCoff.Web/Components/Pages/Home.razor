@@ -1,5 +1,6 @@
 ﻿@page "/"
-@inject AuthenticationSessionService AuthService
+@using Microsoft.AspNetCore.Components.Authorization
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 <PageTitle>AgenteCoff</PageTitle>
 
@@ -28,10 +29,17 @@
     private bool isAuthenticated;
     private string? userName;
 
-    protected override async Task OnInitializedAsync()
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthStateTask { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var token = await AuthService.GetTokenAsync();
-        isAuthenticated = !string.IsNullOrWhiteSpace(token);
-        userName = await AuthService.GetUserNameAsync();
+        if (!firstRender)
+            return;
+
+        var user = HttpContextAccessor.HttpContext?.User;
+        isAuthenticated = user?.Identity?.IsAuthenticated ?? false;
+        userName = isAuthenticated ? user?.Identity?.Name : null;
+        StateHasChanged();
     }
 }
