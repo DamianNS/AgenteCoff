@@ -1,7 +1,37 @@
 ﻿@page "/"
+@inject AuthenticationSessionService AuthService
 
-<PageTitle>Home</PageTitle>
+<PageTitle>AgenteCoff</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="container py-4">
+    <h1>Bienvenido a AgenteCoff</h1>
 
-Welcome to your new app.
+    @if (isAuthenticated)
+    {
+        <div class="alert alert-success">
+            Estás autenticado como <strong>@userName</strong>.
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Para ver el clima protegido, debes iniciar sesión.
+        </div>
+    }
+
+    <p>Usa el formulario de inicio de sesión para obtener un token JWT y acceder a los recursos protegidos del backend.</p>
+
+    <a class="btn btn-primary" href="/login">Ir al inicio de sesión</a>
+</div>
+
+@code {
+    private bool isAuthenticated;
+    private string? userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await AuthService.GetTokenAsync();
+        isAuthenticated = !string.IsNullOrWhiteSpace(token);
+        userName = await AuthService.GetUserNameAsync();
+    }
+}
