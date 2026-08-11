@@ -3,15 +3,14 @@ using AgenteCoff.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddOutputCache();
-
+builder.Services.AddScoped<AuthenticationSessionService>();
+builder.Services.AddHttpClient<AuthApiClient>(client => client.BaseAddress = new("http://apiservice"));
 builder.Services.AddHttpClient<WeatherApiClient>(client => client.BaseAddress = new("http://apiservice"));
 
 var app = builder.Build();
@@ -22,7 +21,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseAntiforgery();
-
 app.UseOutputCache();
 
 app.MapStaticAssets();

@@ -1,26 +1,26 @@
+using System.Text;
 using AgenteCoff.ApiService.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AgenteCoff.ApiService
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // 1. Configuraciones del Contenedor de Dependencias (Servicios)
             builder.AddServiceDefaults();
             builder.Services.AddProblemDetails();
             builder.Services.AddOpenApi();
-            builder.Services.AddControllers(); //  MOVIDO ACÁ: Antes del Build
+            builder.Services.AddControllers();
 
-            // Configurar Entity Framework Core con SQLite
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=/app/data/agentecoff.db";
-
             var dbFilePath = connectionString.Replace("Data Source=", "").Trim();
 
-            // Si contiene una ruta de carpetas (como en Docker), asegura que la carpeta exista antes de arrancar
             if (dbFilePath.Contains('/') || dbFilePath.Contains('\\'))
             {
                 var directory = Path.GetDirectoryName(dbFilePath);
@@ -30,20 +30,70 @@ namespace AgenteCoff.ApiService
                 }
             }
 
-            builder.Services.AddDbContext<Data.AppDbContext>(options =>
+            builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlite(connectionString));
 
-            // 2. Construcción de la aplicación
-            var app = builder.Build(); // A partir de acá, los servicios son de solo lectura
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequiredLength = 6;
+                })
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
 
-            // 🚀 TRUCO AUTOMÁTICO: Crea la base de datos y la tabla si no existen al iniciar
+            var jwtKey = builder.Configuration["JwtSettings:Key"] ?? "AgenteCoffLocalDevelopmentKey!2026-2027-ValidKey";
+            var jwtIssuer = builder.Configuration["JwtSettings:Issuer"] ?? "AgenteCoff";
+            var jwtAudience = builder.Configuration["JwtSettings:Audience"] ?? "AgenteCoff-Users";
+
+            builder.Services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtIssuer,
+                        ValidateAudience = true,
+                        ValidAudience = jwtAudience,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.FromMinutes(1)
+                    };
+                });
+
+            builder.Services.AddAuthorization();
+
+            var app = builder.Build();
+
             using (var scope = app.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                db.Database.EnsureCreated(); // Ideal para SQLite en entornos hogareños/Raspberry
+                db.Database.EnsureCreated();
+
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                var defaultEmail = "admin@agentecoff.local";
+                var defaultPassword = "Password123!";
+
+                if (await userManager.FindByEmailAsync(defaultEmail) is null)
+                {
+                    var defaultUser = new IdentityUser
+                    {
+                        UserName = defaultEmail,
+                        Email = defaultEmail,
+                        EmailConfirmed = true
+                    };
+
+                    await userManager.CreateAsync(defaultUser, defaultPassword);
+                }
             }
 
-            // 3. Configuración del Pipeline HTTP (Middlewares y Endpoints)
             app.UseExceptionHandler();
 
             if (app.Environment.IsDevelopment())
@@ -51,6 +101,8 @@ namespace AgenteCoff.ApiService
                 app.MapOpenApi();
             }
 
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.MapControllers();
             app.MapDefaultEndpoints();
             app.MapStaticAssets();
