@@ -1,16 +1,14 @@
 ﻿@page "/"
-@using Microsoft.AspNetCore.Components.Authorization
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 <PageTitle>AgenteCoff</PageTitle>
 
 <div class="container py-4">
     <h1>Bienvenido a AgenteCoff</h1>
 
-    @if (isAuthenticated)
+    @if (IsAuthenticated)
     {
         <div class="alert alert-success">
-            Estás autenticado como <strong>@userName</strong>.
+            Estás autenticado como <strong>@UserName</strong>.
         </div>
     }
     else
@@ -24,22 +22,3 @@
 
     <a class="btn btn-primary" href="/login">Ir al inicio de sesión</a>
 </div>
-
-@code {
-    private bool isAuthenticated;
-    private string? userName;
-
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthStateTask { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender)
-            return;
-
-        var user = HttpContextAccessor.HttpContext?.User;
-        isAuthenticated = user?.Identity?.IsAuthenticated ?? false;
-        userName = isAuthenticated ? user?.Identity?.Name : null;
-        StateHasChanged();
-    }
-}
