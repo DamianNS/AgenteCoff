@@ -13,3 +13,5 @@ AgenteCoff.ApiService/AgenteCoffLocal.db
 *.user
 /AgenteCoff.ApiService/publish
 *.tar
+AgenteCoff.ApiService/AgenteCoffLocal.db-shm
+AgenteCoff.ApiService/AgenteCoffLocal.db-wal

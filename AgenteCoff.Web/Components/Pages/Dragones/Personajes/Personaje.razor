@@ -1,0 +1,69 @@
+@page "/dragones/personaje"
+@using AgenteCoff.ServiceDefaults.Models.Dragones
+@inject CharacterService CharacterService
+
+<PageTitle>Personaje D&D</PageTitle>
+
+<div class="page">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Gestionar Personaje</h1>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Nuevo Personaje</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="characterForm">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nombre (Name)</label>
+                                <input type="text" id="name" class="form-control" @bind="CharacterData.Name" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="raze" class="form-label">Raza (Raze)</label>
+                                <input type="text" id="raze" class="form-control" @bind="CharacterData.Raze" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="class" class="form-label">Clase (Class)</label>
+                                <input type="text" id="class" class="form-control" @bind="CharacterData.Class" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="age" class="form-label">Edad (Age)</label>
+                                <input type="number" id="age" class="form-control" @bind="CharacterData.Age" />
+                            </div>
+                            
+                            <button type="button" class="btn btn-primary" @onclick="SaveCharacter">Guardar Personaje</button>
+                            <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancelar</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <hr class="my-5">
+
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    
+    
+    private Character CharacterData = new Character();
+    
+    private void SaveCharacter()
+    {
+       
+    }
+
+    private void Cancel()
+    {
+        CharacterData = new Character();
+    }
+
+    private void EditCharacter(Character character)
+    {
+        CharacterData = new Character { Name = character.Name, Raze = character.Raze, Class = character.Class, Age = character.Age };
+    }
+}
