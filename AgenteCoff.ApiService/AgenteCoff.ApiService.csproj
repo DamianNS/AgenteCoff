@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <None Remove="AgenteCoffLocal.db" />
+    <None Remove="AgenteCoffLocal.db-shm" />
+    <None Remove="AgenteCoffLocal.db-wal" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,10 +32,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.10" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

@@ -11,7 +11,7 @@ public partial class Weather : ComponentBase
     private Task<AuthenticationState>? AuthState { get; set; }
 
     [Inject]
-    private ApiClient WeatherApi {  get; set; }
+    private ApiClient WeatherApi { get; set; }
 
     public bool IsAuthenticated;
     public IEnumerable<Claim> claims => AuthState?.Result?.User?.Claims ?? Enumerable.Empty<Claim>();
@@ -21,7 +21,7 @@ public partial class Weather : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var a  = await AuthState;
+        var a = await AuthState;
         IsAuthenticated = a?.User?.Identity?.IsAuthenticated ?? false;
         userName = a?.User?.Identity?.Name;
 

@@ -11,7 +11,7 @@
     </Authorized>
     <NotAuthorized>
         <p>Hello! You're <em>NOT</em> authenticated, so processing data will fail.</p>
-    </NotAuthorized>
+    </NotAuthorized>    
 </AuthorizeView>
 
 @if (claims.Any())
@@ -29,7 +29,7 @@
     <div class="alert alert-warning">
         Debes iniciar sesión para acceder al clima protegido.
     </div>
-    <a class="btn btn-primary" href="/login">Ir a iniciar sesión</a>
+    <a class="btn btn-primary" href="/Account/Login">Ir a iniciar sesión</a>
 }
 else if (Forecasts == null)
 {

@@ -3,7 +3,7 @@ using System.Net;
 namespace AgenteCoff.Web.Services;
 
 public class ApiClient(HttpClient httpClient)
-{   
+{
 
     public async Task<AuthResult?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
@@ -19,7 +19,7 @@ public class ApiClient(HttpClient httpClient)
 
     public async Task<WeatherForecast[]> GetWeatherAsync(int maxItems = 10, CancellationToken cancellationToken = default)
     {
-        
+
         using var request = new HttpRequestMessage(HttpMethod.Get, "/weatherforecast");
 
         using var response = await httpClient.SendAsync(request, cancellationToken);
@@ -32,6 +32,11 @@ public class ApiClient(HttpClient httpClient)
 
         var forecasts = await response.Content.ReadFromJsonAsync<WeatherForecast[]>(cancellationToken: cancellationToken) ?? [];
         return forecasts.Take(maxItems).ToArray();
+    }
+
+    internal async Task<T> SendGet<T>(string endPoint)
+    {
+        return await httpClient.GetFromJsonAsync<T>(endPoint);
     }
 }
 

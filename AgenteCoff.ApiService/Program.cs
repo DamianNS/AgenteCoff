@@ -1,9 +1,10 @@
-using System.Text;
 using AgenteCoff.ApiService.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace AgenteCoff.ApiService
 {
@@ -70,29 +71,14 @@ namespace AgenteCoff.ApiService
 
             builder.Services.AddAuthorization();
 
+            builder.Services.AddHttpContextAccessor();
+
+            // Mis servicios personalizados
+            builder.Services.AddScoped<Services.UserService>();
+
             var app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                db.Database.EnsureCreated();
-
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-                var defaultEmail = "admin@agentecoff.local";
-                var defaultPassword = "Password123!";
-
-                if (await userManager.FindByEmailAsync(defaultEmail) is null)
-                {
-                    var defaultUser = new IdentityUser
-                    {
-                        UserName = defaultEmail,
-                        Email = defaultEmail,
-                        EmailConfirmed = true
-                    };
-
-                    await userManager.CreateAsync(defaultUser, defaultPassword);
-                }
-            }
+            await CreateDb(app);
 
             app.UseExceptionHandler();
 
@@ -107,6 +93,39 @@ namespace AgenteCoff.ApiService
             app.MapDefaultEndpoints();
             app.MapStaticAssets();
             app.Run();
+        }
+
+        private static async Task CreateDb(WebApplication app)
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                db.Database.EnsureCreated();
+
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                var defaultEmail = "admin@agentecoff.local";
+                var defaultPassword = "Password123!";
+                
+                if (await userManager.FindByEmailAsync(defaultEmail) is null)
+                {
+                    var defaultUser = new IdentityUser
+                    {
+                        UserName = defaultEmail,
+                        Email = defaultEmail,
+                        EmailConfirmed = true
+                    };
+
+                    await userManager.CreateAsync(defaultUser, defaultPassword);
+                }
+
+                var user = await userManager.FindByEmailAsync(defaultEmail);
+
+                db.Characters.AddRange(
+                    new ServiceDefaults.Models.Dragones.Character { User = user.Id, Name = "Gandalf", Raze = "Elfo", Class = "Mago", Age = 200 },
+                    new ServiceDefaults.Models.Dragones.Character { User = user.Id, Name = "Frodo", Raze = "Humano", Class = "Guerrero", Age = 35 }
+                );
+                await db.SaveChangesAsync();
+            }
         }
     }
 }

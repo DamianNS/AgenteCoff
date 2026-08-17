@@ -1,0 +1,56 @@
+@page "/dragones"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>D&D Module</PageTitle>
+
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">D&D Module</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav nav-tabs me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link @(tabActivo == 0 ? "active" : "")" aria-current="page" href="#" @onclick="() => tabActivo = 0" @onclick:preventDefault>Personajes</a>
+                    </li>
+                    <li class="nav-item dropdown d-none">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Dropdown</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" @onclick="() => tabActivo = 1" @onclick:preventDefault>Action</a></li>
+                            <li><a class="dropdown-item" href="#" @onclick="() => tabActivo = 2" @onclick:preventDefault>Another action</a></li>
+                            <li><a class="dropdown-item" href="#" @onclick="() => tabActivo = 3" @onclick:preventDefault>Something else here</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" @onclick="() => tabActivo = 4" @onclick:preventDefault>Separated link</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link @(tabActivo == 5 ? "active" : "")" href="#" @onclick="() => tabActivo = 5" @onclick:preventDefault>Campañas</a>
+                    </li>
+                    <li class="nav-item d-none">
+                        <a class="nav-link disabled" aria-disabled="true" @onclick="() => tabActivo = 6" @onclick:preventDefault>Disabled</a>
+                    </li>
+                </ul>
+                <form class="d-flex d-none" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="container">
+    @if(tabActivo == 0)
+    {
+        <div class="row mt-4">
+            <div class="col">                
+                <p>Gestiona tu lista de personajes.</p>
+                <AgenteCoff.Web.Components.Pages.Dragones.Personajes.Personajes />
+            </div>
+        </div>
+    }   
+</div>
+

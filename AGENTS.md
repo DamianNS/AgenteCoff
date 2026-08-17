@@ -1,26 +1,31 @@
-# 🤖 AgenteCoff Quickstart Guide
+# AGENTS.md - AgenteCoff Project
 
-## 🏗️ Architecture Overview
-- **webfrontend (Port 8080):** UI interface. Communicates with `apiservice` over `aspire` network.
+## Architecture Overview
+
+- **webfrontend (Port 8080):** Blazor UI. Communicates with `apiservice` via `aspire` network.
 - **apiservice (Port 5001):** Core business logic. Uses `agentecoff.db` (SQLite).
-- **Dashboard (Port 18889/18888):** OTLP/gRPC metrics endpoint.
+- **Dashboard (Port 18889/18888):** OTLP/gRPC metrics endpoint. Auth requires `DASHBOARD__OTLP__AUTHMODE: ApiKey`.
 
-## 📡 Communication (Telemetry)
-- Agents export diagnostics via **OTLP/gRPC** to the Dashboard.
-- **Endpoint:** `http://mi-red-hogarena-dashboard:18889`
-- **Protocol:** `grpc`
-- **Auth:** Requires `DASHBOARD__OTLP__AUTHMODE: ApiKey`
+## Web Frontend Stack
 
-## ⚙️ Workflow & Commands
-- **Build/Deploy:** CI is handled by `.github/workflows/deploy.yml`.
-    - Updates involve `docker compose pull` via SSH (port `5583`) to update containers.
+- **Framework:** .NET 10 Blazor.
+- **Component Structure:** Every component must have three files: `.razor`, `.cs`, and `.css`.
+- **Data Model:** Character data is managed by `CharacterService`.
+
+## Workflow & Commands
+
 - **Local Debugging:** Check `agentecoff.db` for data persistence.
+- **API Communication:** Use `HttpClient` injected via `ApiClient` for all external service calls.
+- **Build/Run:** 
+    - Build: `dotnet build`
+    - Run: `dotnet run` (for the Web project)
+    - Verification: `dotnet test` (if tests are added)
 - **Troubleshooting Flow:**
     1. Check Nginx Proxy Manager forwarding to `webfrontend:8080`.
     2. Verify API connectivity within the `aspire` network.
     3. Inspect OTLP variables if telemetry is failing.
 
-## 🔍 Investigation Hierarchy
-1. **Config/Docs:** `README*`, `opencode.json`, `.opencode/instructions`.
-2. **Entrypoints:** Inspect `webfrontend` and `apiservice` codebases to find main execution paths.
-3. **Truth Source:** Trust executable scripts/CI workflows over prose documentation for build/deployment steps.
+## Constraints
+
+- **Source of Truth:** Trust executable scripts (build/CI) over prose documentation.
+- **No Secrets:** Never commit keys or secrets; use environment variables or configuration files.

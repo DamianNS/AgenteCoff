@@ -14,5 +14,9 @@
     <ProjectReference Include="..\AgenteCoff.ServiceDefaults\AgenteCoff.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\Pages\Models\" />
+  </ItemGroup>
+
 
 </Project>

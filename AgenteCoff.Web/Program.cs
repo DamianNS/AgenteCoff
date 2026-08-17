@@ -20,12 +20,15 @@ builder.Services.AddDataProtection();
 builder.Services.AddTransient<CookieToJwtHandler>();
 builder.Services.AddHttpClient<ApiClient>(client => client.BaseAddress = new("http://apiservice"))
     .AddHttpMessageHandler<CookieToJwtHandler>();
-builder.Services.AddScoped<ProtectedSessionStorage>(); 
+builder.Services.AddScoped<ProtectedSessionStorage>();
+
+builder.Services.AddScoped<CharacterService>();
 
 builder.Services.AddCascadingAuthenticationState(); // Requerido en Blazor
 
 builder.Services.AddAuthentication("login")
-    .AddCookie("login", options => {
+    .AddCookie("login", options =>
+    {
         options.Cookie.Name = "X-Access-Token";
     });
 

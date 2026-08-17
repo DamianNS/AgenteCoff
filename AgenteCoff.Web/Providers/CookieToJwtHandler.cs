@@ -20,7 +20,7 @@ namespace AgenteCoff.Web.Providers
             // 2. Buscar la cookie donde guardamos el JWT
             if (httpContext?.User?.Identity?.IsAuthenticated ?? false)
             {
-                var claim = httpContext?.User?.Claims.ToList().FirstOrDefault(c=> c.Type == "ElTocken");
+                var claim = httpContext?.User?.Claims.ToList().FirstOrDefault(c => c.Type == "ElTocken");
 
                 if (claim != null && !string.IsNullOrEmpty(claim.Value))
                 {
