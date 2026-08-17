@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgenteCoff.ApiService.Controllers
@@ -16,6 +17,7 @@ namespace AgenteCoff.ApiService.Controllers
             return Ok("API service is running. Navigate to /weatherforecast to see sample data.");
         }
 
+        [Authorize]
         [HttpGet("/weatherforecast")]
         public IEnumerable<WeatherForecast> GetWeatherForecast()
         {

@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <None Remove="AgenteCoffLocal.db" />
+    <None Remove="AgenteCoffLocal.db-shm" />
+    <None Remove="AgenteCoffLocal.db-wal" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
     <PackageReference Include="Microsoft.OpenApi" Version="2.7.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.10" />

@@ -1,7 +1,25 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
 
-<PageTitle>Home</PageTitle>
+<PageTitle>AgenteCoff</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="container py-4">
+    <h1>Bienvenido a AgenteCoff</h1>
 
-Welcome to your new app.
+    <AuthorizeView>
+        <Authorized>
+            <div class="alert alert-success">
+                Estás autenticado como <strong>@UserName</strong>.
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <div class="alert alert-info">
+                Para ver el clima protegido, debes iniciar sesión.
+            </div>
+        </NotAuthorized>    
+    </AuthorizeView>
+
+    <p>Usa el formulario de inicio de sesión para obtener un token JWT y acceder a los recursos protegidos del backend.</p>
+
+    <a class="btn btn-primary" href="/Account/Login">Ir al inicio de sesión</a>
+</div>
