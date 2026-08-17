@@ -2,14 +2,14 @@
 
 ## Architecture Overview
 
-- **webfrontend (Port 8080):** Blazor UI. Communicates with `apiservice` via `aspire` network.
+- **webfrontend (Port 8080) (AgenteCoff.Web):** Blazor UI. Communicates with `apiservice` via `aspire` network.
 - **apiservice (Port 5001):** Core business logic. Uses `agentecoff.db` (SQLite).
 - **Dashboard (Port 18889/18888):** OTLP/gRPC metrics endpoint. Auth requires `DASHBOARD__OTLP__AUTHMODE: ApiKey`.
 
-## Web Frontend Stack
+## Web Frontend Stack (AgenteCoff.Web)
 
 - **Framework:** .NET 10 Blazor.
-- **Component Structure:** Every component must have three files: `.razor`, `.cs`, and `.css`.
+- **Component Structure:** Every component Blazor must have three files: `.razor`, `.cs`, and `.css`.
 - **Data Model:** Character data is managed by `CharacterService`.
 
 ## Workflow & Commands
