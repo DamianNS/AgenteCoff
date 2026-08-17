@@ -8,56 +8,55 @@
 <AuthorizeView>
     <Authorized>
         <p>Hello, userName! You're authenticated, so you can see this page that shows your claims.</p>
+        @if (claims.Any())
+        {
+            <ul>
+                @foreach (var claim in claims)
+                {
+                    <li><b>@claim.Type:</b> @claim.Value</li>
+                }
+            </ul>
+        }
+
+        @if (Forecasts == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <p>Estás autenticado con JWT del backend.</p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th aria-label="Temperature in Celsius">Temp. (C)</th>
+                        <th aria-label="Temperature in Fahrenheit">Temp. (F)</th>
+                        <th>Summary</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var forecast in Forecasts)
+                    {
+                        <tr>
+                            <td>@forecast.Date.ToShortDateString()</td>
+                            <td>@forecast.TemperatureC</td>
+                            <td>@forecast.TemperatureF</td>
+                            <td>@forecast.Summary</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
     </Authorized>
     <NotAuthorized>
         <p>Hello! You're <em>NOT</em> authenticated, so processing data will fail.</p>
+        <div class="alert alert-warning">
+            Debes iniciar sesión para acceder al clima protegido.
+        </div>
+        <a class="btn btn-primary" href="/Account/Login">Ir a iniciar sesión</a>
     </NotAuthorized>    
 </AuthorizeView>
 
-@if (claims.Any())
-{
-    <ul>
-        @foreach (var claim in claims)
-        {
-            <li><b>@claim.Type:</b> @claim.Value</li>
-        }
-    </ul>
-}
 
-@if (!IsAuthenticated)
-{
-    <div class="alert alert-warning">
-        Debes iniciar sesión para acceder al clima protegido.
-    </div>
-    <a class="btn btn-primary" href="/Account/Login">Ir a iniciar sesión</a>
-}
-else if (Forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <p>Estás autenticado con JWT del backend.</p>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th aria-label="Temperature in Celsius">Temp. (C)</th>
-                <th aria-label="Temperature in Fahrenheit">Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in Forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
